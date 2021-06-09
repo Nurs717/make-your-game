@@ -1,0 +1,17 @@
+{
+    "name": "js-space-invaders",
+    "version": "1.0.0",
+    "description": "old game",
+    "main": "index.js",
+    "scripts": {
+        "start": "parcel index.html"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "Alem School",
+    "devDependencies": {
+        "http-server": "^0.12.3",
+        "parcel": "^1.12.4"
+    },
+    "type": "module"
+}

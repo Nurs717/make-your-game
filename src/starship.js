@@ -8,9 +8,10 @@ export class StarShip extends Entity {
 
         this.Speed = 2;
         this.Ship_Image_Width = 43;
+        this.canFire = true;
 
         this.setX(window.innerWidth / 2);
-        this.setY(window.innerHeight - 200);
+        this.setY(window.innerHeight - 150);
     }
 
     moveRight() {
@@ -22,9 +23,15 @@ export class StarShip extends Entity {
     }
 
     fire({ createBullet }) {
-        createBullet({
-            x: this.x,
-            y: this.y,
-        });
+        if (this.canFire) {
+            this.canFire = false;
+            createBullet({
+                x: this.x,
+                y: this.y,
+            });
+            setTimeout(() => {
+                this.canFire = true;
+            }, 1000);
+        }
     }
 }

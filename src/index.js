@@ -2,6 +2,8 @@ const requestAnimationFrame = window.requestAnimationFrame;
 
 import { Bullet } from './bullet.js';
 import { StarShip } from './starship.js';
+import { Enemy } from './enemy.js';
+import { Score } from './score.js'
 
 const keys = {
     ArrowLeft: false,
@@ -21,8 +23,70 @@ document.addEventListener('keyup', (event) => {
 
 const starShip = new StarShip();
 const bullets = [];
+const enemies = [];
+const scoreGui = new Score();
 
-const creatBullet = ({ x, y }) => {
+const removeEnemy = (enemy) => {
+    enemies.splice(enemies.indexOf(enemy), 1);
+    enemy.remove();
+}
+
+const removeBullet = (bullet) => {
+    bullets.splice(bullets.indexOf(bullet), 1);
+    bullet.remove();
+}
+
+const isOverLapping = (entity1, entity2) => {
+    const rect1 = entity1.el.getBoundingClientRect();
+    const rect2 = entity2.el.getBoundingClientRect();
+    return !(
+        rect1.right < rect2.left ||
+        rect1.left > rect2.right ||
+        rect1.bottom < rect2.top ||
+        rect1.top > rect2.bottom
+    );
+}
+
+const getOverLappingBullet = (entity) => {
+    for (let bullet of bullets) {
+        if (isOverLapping(entity, bullet)) {
+            return bullet;
+        }
+    }
+    return null
+};
+
+for (let row = 0; row < 5; row++) {
+    for (let col = 0; col < 9; col++) {
+        const enemy = new Enemy({
+            x: col * 130 + 240,
+            y: row * 120 + 80,
+            getOverLappingBullet,
+            removeEnemy,
+            removeBullet,
+            addToScore: (amount) => scoreGui.addToScore(amount),
+        });
+        enemies.push(enemy);
+    }
+}
+
+const getLeftMostEnemy = () => {
+    return enemies.reduce((minimumEnemy, currentEnemy) => {
+        return currentEnemy.x < minimumEnemy.x ?
+            currentEnemy :
+            minimumEnemy;
+    });
+}
+
+const getRightMostEnemy = () => {
+    return enemies.reduce((maximumEnemy, currentEnemy) => {
+        return currentEnemy.x > maximumEnemy.x ?
+            currentEnemy :
+            maximumEnemy;
+    });
+}
+
+const createBullet = ({ x, y }) => {
     bullets.push(
         new Bullet({
             x,
@@ -40,10 +104,39 @@ const update = () => {
 
     if (keys[' ']) {
         starShip.fire({
-            creatBullet,
+            createBullet,
         });
     }
-}
+
+    bullets.forEach(bullet => {
+        bullet.update();
+
+        if (bullet.y < 0) {
+            bullet.remove();
+            bullets.splice(bullets.indexOf(bullet), 1);
+        }
+    });
+
+    enemies.forEach((enemy) => {
+        enemy.update();
+    });
+
+    const leftMostEnemy = getLeftMostEnemy();
+    if (leftMostEnemy.x < 30) {
+        enemies.forEach((enemy) => {
+            enemy.setDirectionRight();
+            enemy.moveDown();
+        });
+    }
+
+    const rightMostEnemy = getRightMostEnemy();
+    if (rightMostEnemy.x > window.innerWidth - 82) {
+        enemies.forEach((enemy) => {
+            enemy.setDirectionLeft();
+            enemy.moveDown();
+        });
+    }
+};
 
 function startAnimating() {
     requestAnimationFrame(startAnimating);

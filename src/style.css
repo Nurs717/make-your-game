@@ -1,6 +1,8 @@
 body {
     font-family: Helvetica;
     background-image: url('images/space_bg.jpg');
+    animation: scroll-background 20s linear infinite;
+    color: red;
 }
 
 
@@ -35,4 +37,19 @@ button {
 
 .bullet {
     position: fixed;
+}
+
+.enemy {
+    position: fixed;
+    max-height: 42px;
+    max-width: 52px;
+}
+
+@keyframes scroll-background {
+    from {
+        background-position-y: 0px;
+    }
+    to {
+        background-position-y: 981px;
+    }
 }

@@ -5,14 +5,15 @@ export class Entity {
         this.el.className = 'entity ' + className;
     }
 
-    setX(x) {
+    setX(x, y) {
         this.x = x;
-        this.el.style.left = `${this.x}px`;
+        this.y = y
+        this.el.style.transform = `translate(${this.x}px, ${this.y}px)`;
     }
 
     setY(y) {
         this.y = y;
-        this.el.style.top = `${this.y}px`;
+        this.el.style.transform = `translate(${this.y}px)`;
     }
 
     remove() {

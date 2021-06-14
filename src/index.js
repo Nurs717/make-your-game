@@ -4,6 +4,7 @@ import { Bullet } from './bullet.js';
 import { StarShip } from './starship.js';
 import { Enemy } from './enemy.js';
 import { Score } from './score.js'
+import { Lives } from './lives.js'
 
 const keys = {
     ArrowLeft: false,
@@ -13,18 +14,20 @@ const keys = {
 
 document.addEventListener('keydown', (event) => {
     keys[event.key] = true;
-    console.log(keys)
 });
 
 document.addEventListener('keyup', (event) => {
     keys[event.key] = false;
-    console.log(keys)
 });
 
-const starShip = new StarShip();
+const ENEMY_ROWS = 5;
+const ENEMY_COLS = 9;
+
 const bullets = [];
 const enemies = [];
+const enemiesGrid = [];
 const scoreGui = new Score();
+const livesGui = new Lives();
 
 const removeEnemy = (enemy) => {
     enemies.splice(enemies.indexOf(enemy), 1);
@@ -56,8 +59,15 @@ const getOverLappingBullet = (entity) => {
     return null
 };
 
-for (let row = 0; row < 5; row++) {
-    for (let col = 0; col < 9; col++) {
+const starShip = new StarShip({
+    removeLife: () => livesGui.removeLife(),
+    getOverLappingBullet,
+    removeBullet,
+});
+
+for (let row = 0; row < ENEMY_ROWS; row++) {
+    const enemiesCol = [];
+    for (let col = 0; col < ENEMY_COLS; col++) {
         const enemy = new Enemy({
             x: col * 130 + 240,
             y: row * 120 + 80,
@@ -67,8 +77,42 @@ for (let row = 0; row < 5; row++) {
             addToScore: (amount) => scoreGui.addToScore(amount),
         });
         enemies.push(enemy);
+        enemiesCol.push(enemy);
     }
+    enemiesGrid.push(enemiesCol);
 }
+
+const getBottomEnemies = () => {
+    const bottomEnemies = [];
+    for (let col = 0; col < ENEMY_COLS; col++) {
+        for (let row = ENEMY_ROWS - 1; row >= 0; row--) {
+            if (enemiesGrid[row][col].el) {
+                bottomEnemies.push(enemiesGrid[row][col]);
+                break;
+            }
+        }
+    }
+    return bottomEnemies;
+};
+
+const getRandomEnemy = (enemyList) => {
+    return enemyList[
+        parseInt(Math.random() * enemyList.length)
+    ];
+}
+
+const enemyFireBullet = () => {
+    const bottomEnemies = getBottomEnemies();
+    const randomEnemy = getRandomEnemy(bottomEnemies);
+
+    createBullet({
+        x: randomEnemy.x + 5,
+        y: randomEnemy.y + 76,
+        isEnemy: true,
+    });
+};
+
+setInterval(enemyFireBullet, 3000);
 
 const getLeftMostEnemy = () => {
     return enemies.reduce((minimumEnemy, currentEnemy) => {
@@ -86,11 +130,12 @@ const getRightMostEnemy = () => {
     });
 }
 
-const createBullet = ({ x, y }) => {
+const createBullet = ({ x, y, isEnemy = false }) => {
     bullets.push(
         new Bullet({
             x,
             y,
+            isEnemy,
         })
     );
 }
@@ -108,10 +153,16 @@ const update = () => {
         });
     }
 
+    starShip.update();
+
     bullets.forEach(bullet => {
         bullet.update();
 
         if (bullet.y < 0) {
+            bullet.remove();
+            bullets.splice(bullets.indexOf(bullet), 1);
+        } else if (bullet.y > window.innerHeight) {
+            console.log(window.innerHeight)
             bullet.remove();
             bullets.splice(bullets.indexOf(bullet), 1);
         }

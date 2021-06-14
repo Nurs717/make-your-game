@@ -1,35 +1,51 @@
+html,
 body {
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    margin: 0;
     font-family: Helvetica;
     background-image: url('images/space_bg.jpg');
     animation: scroll-background 20s linear infinite;
     color: red;
 }
 
-
-/* .wrapper {
-    border: 3px solid #010124;
-    width: 800px;
-    height: 600px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+.wrap {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 
-button {
-    position: absolute;
-    bottom: -90px;
-    left: 50%;
-    transform: translate(-50%, 0);
-    background: #010124;
-    color: red;
-    padding: 20px 50px;
-    border-radius: 5px;
-    z-index: 200;
-    cursor: pointer;
-    border: none;
-    outline: none;
-} */
+header {
+    text-align: center;
+    background: coral;
+    color: #fff;
+    padding: 10%;
+}
+
+footer {
+    padding: 10%;
+    text-align: center;
+    font-size: 11px;
+    background: chartreuse;
+    color: white;
+}
+
+.game-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #222;
+}
+
+.game {
+    width: 800px;
+    height: 800px;
+    position: relative;
+}
 
 .entity {
     position: fixed;
@@ -51,5 +67,58 @@ button {
     }
     to {
         background-position-y: 981px;
+    }
+}
+
+.lives {
+    font-size: 30px;
+    text-align: left;
+}
+
+.congrats {
+    display: none;
+    position: absolute;
+    background: yellow;
+    color: white;
+    padding: 20px 50px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    text-align: center;
+    animation: pop-in 1s;
+}
+
+.game-over {
+    display: none;
+    position: absolute;
+    background: red;
+    color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    text-align: center;
+    animation: pop-in 1s;
+}
+
+.btn {
+    border: 2px solid blue;
+    border-radius: 3px;
+    box-shadow: 0 2px rgba(0, 0, 0, 0.15);
+    background: linear-gradient( to bottom, #fff 0%, #fff 49%, #f5f5f5 50%, #eee 100%);
+    padding: 10px, 40px;
+    font: 14px sans-serif;
+}
+
+@keyframes pop-in {
+    0% {
+        opacity: 0;
+        transform: translate(0, -100px);
+    }
+    10% {
+        opacity: 1;
+    }
+    50% {
+        transform: translate(0, 30px);
+    }
+    100% {
+        transform: translate(0, 0);
     }
 }

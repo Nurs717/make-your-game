@@ -9,13 +9,14 @@ export class Enemy extends Entity {
         this.Speed = 1;
         this.DownSpeed = 20;
         this.direction = 'LEFT';
+
         this.getOverLappingBullet = getOverLappingBullet;
         this.removeBullet = removeBullet;
         this.removeEnemy = removeEnemy;
         this.addToScore = addToScore;
 
-        this.setX(x + 17);
-        this.setY(y - 37);
+        this.setX(x + 17, y - 37);
+        // this.setY(y - 37);
     }
 
     setDirectionRight() {
@@ -27,18 +28,18 @@ export class Enemy extends Entity {
     }
 
     moveDown() {
-        this.setY(this.y + this.DownSpeed);
+        this.setX(this.x, this.y + this.DownSpeed);
     }
 
     update() {
         if (this.direction === 'LEFT') {
-            this.setX(this.x - this.Speed);
+            this.setX(this.x - this.Speed, this.y);
         } else {
-            this.setX(this.x + this.Speed);
+            this.setX(this.x + this.Speed, this.y);
         }
 
         const bullet = this.getOverLappingBullet(this);
-        if (bullet) {
+        if (bullet && !bullet.isEnemy) {
             this.removeEnemy(this);
             this.removeBullet(bullet);
             this.addToScore(POINTS_PER_KILL);

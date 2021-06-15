@@ -4,8 +4,7 @@ export class Lives extends Entity {
     constructor() {
         super({ className: 'lives' });
         this.lives = 3;
-        this.setX(window.innerWidth / 2, window.innerHeight - 50);
-        // this.setY(window.innerHeight - 50);
+        this.setXY(window.innerWidth / 2, window.innerHeight - 50);
         this.refreshText();
     }
 

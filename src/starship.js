@@ -2,7 +2,7 @@
 import { Entity } from './entity.js';
 
 export class StarShip extends Entity {
-    constructor({ removeLife, getOverLappingBullet, removeBullet }) {
+    constructor({ removeLife, getOverLappingBullet, removeBullet, GAME_Y }) {
         super({ tag: 'img' })
         this.el.src = "/src/images/ship.png";
 
@@ -15,16 +15,15 @@ export class StarShip extends Entity {
         this.getOverLappingBullet = getOverLappingBullet;
         this.removeBullet = removeBullet
 
-        this.setX(window.innerWidth / 2, window.innerHeight - 150);
-        // this.setY(window.innerHeight - 150);
+        this.setXY(window.innerWidth / 2, window.innerHeight - ((window.innerHeight - GAME_Y) / 2) - 100);
     }
 
     moveRight() {
-        this.setX(this.x + this.Speed, this.y);
+        this.setXY(this.x + this.Speed, this.y);
     }
 
     moveLeft() {
-        this.setX(this.x - this.Speed, this.y);
+        this.setXY(this.x - this.Speed, this.y);
     }
 
     fire({ createBullet }) {

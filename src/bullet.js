@@ -7,12 +7,11 @@ export class Bullet extends Entity {
         this.isEnemy = isEnemy;
         this.isEnemy ? this.el.src = "/src/images/enemybullet.png" : this.el.src = "/src/images/bullet.png";
 
-        this.setX(x + 17, y - 37);
-        // this.setY(y - 37);
+        this.setXY(x + 17, y - 37);
     }
 
     update() {
         const dy = this.isEnemy ? this.Speed : -this.Speed
-        this.setX(this.x, this.y + dy);
+        this.setXY(this.x, this.y + dy);
     }
 }

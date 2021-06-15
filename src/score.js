@@ -4,7 +4,7 @@ export class Score extends Entity {
     constructor() {
         super();
         this.score = 0;
-        this.setX(window.innerWidth / 2, 20);
+        this.setXY(window.innerWidth / 2, 20);
         this.refreshText();
     }
 

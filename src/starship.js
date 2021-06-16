@@ -1,4 +1,6 @@
-// import shipImage from '/src/images/ship.png'
+const windowHeight = window.innerHeight;
+const windowWidth = window.innerWidth;
+
 import { Entity } from './entity.js';
 
 export class StarShip extends Entity {
@@ -15,7 +17,7 @@ export class StarShip extends Entity {
         this.getOverLappingBullet = getOverLappingBullet;
         this.removeBullet = removeBullet
 
-        this.setXY(window.innerWidth / 2, window.innerHeight - ((window.innerHeight - GAME_Y) / 2) - 100);
+        this.setXY(windowWidth / 2, windowHeight - ((windowHeight - GAME_Y) / 2) - 50);
     }
 
     moveRight() {

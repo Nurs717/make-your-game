@@ -14,20 +14,30 @@ const keys = {
 };
 
 document.addEventListener('keydown', (event) => {
-    keys[event.key] = true;
+    if (keys[event] !== 'p') {
+        keys[event.key] = true;
+    }
 });
 
 document.addEventListener('keyup', (event) => {
     if (keys[event] !== 'p') {
         keys[event.key] = false;
-    };
+    }
 });
 
-const GAME_X = 1000;
-const GAME_Y = 800;
+const windowWidth = window.innerWidth;
+const windowHeight = window.innerHeight;
 
-const ENEMY_ROWS = 5;
-const ENEMY_COLS = 7;
+const GAME_X = 800;
+const GAME_Y = 600;
+
+const starshipMax = windowWidth - ((windowWidth - GAME_X) / 2) - 43;
+const starshipMin = (windowWidth - GAME_X) / 2;
+const enemyLeftBorder = (windowWidth - GAME_X) / 2;
+const enemyRightBorder = windowWidth - ((windowWidth - GAME_X) / 2) - 30;
+
+const ENEMY_ROWS = 3;
+const ENEMY_COLS = 6;
 
 var PAUSED = false;
 
@@ -36,6 +46,11 @@ const enemies = [];
 const enemiesGrid = [];
 const scoreGui = new Score();
 const livesGui = new Lives();
+
+document.querySelector(".continue").addEventListener("click", (e) => {
+    document.querySelector(".pause").style.display = "none";
+    PAUSED = false;
+})
 
 const removeEnemy = (enemy) => {
     enemies.splice(enemies.indexOf(enemy), 1);
@@ -78,8 +93,8 @@ for (let row = 0; row < ENEMY_ROWS; row++) {
     const enemiesCol = [];
     for (let col = 0; col < ENEMY_COLS; col++) {
         const enemy = new Enemy({
-            x: ((window.innerWidth - GAME_X) / 2) + col * 100 + 240,
-            y: ((window.innerHeight - GAME_Y) / 2) + row * 80 + 40,
+            x: ((windowWidth - GAME_X) / 2) + col * 125 + 40,
+            y: ((windowHeight - GAME_Y) / 2) + row * 80,
             getOverLappingBullet,
             removeEnemy,
             removeBullet,
@@ -152,9 +167,9 @@ const createBullet = ({ x, y, isEnemy = false }) => {
 }
 
 const update = () => {
-    if (keys['ArrowRight'] && starShip.x < window.innerWidth - ((window.innerWidth - GAME_X) / 2) - starShip.Ship_Image_Width && !PAUSED) {
+    if (keys['ArrowRight'] && starShip.x < starshipMax && !PAUSED) {
         starShip.moveRight();
-    } else if (keys['ArrowLeft'] && starShip.x > (window.innerWidth - GAME_X) / 2 && !PAUSED) {
+    } else if (keys['ArrowLeft'] && starShip.x > starshipMin && !PAUSED) {
         starShip.moveLeft();
     }
 
@@ -167,9 +182,17 @@ const update = () => {
     if (keys['p']) {
         if (!PAUSED) {
             PAUSED = true;
+            keys['p'] = false;
         } else {
             PAUSED = false;
+            keys['p'] = false;
         }
+    }
+
+    if (PAUSED) {
+        document.querySelector(".pause").style.display = "block";
+    } else {
+        document.querySelector(".pause").style.display = "none";
     }
 
     starShip.update();
@@ -182,8 +205,7 @@ const update = () => {
         if (bullet.y < 0) {
             bullet.remove();
             bullets.splice(bullets.indexOf(bullet), 1);
-        } else if (bullet.y > window.innerHeight) {
-            console.log(window.innerHeight)
+        } else if (bullet.y > windowHeight) {
             bullet.remove();
             bullets.splice(bullets.indexOf(bullet), 1);
         }
@@ -196,7 +218,7 @@ const update = () => {
     });
 
     const leftMostEnemy = getLeftMostEnemy();
-    if (leftMostEnemy.x < (window.innerWidth - GAME_X) / 2) {
+    if (leftMostEnemy.x < enemyLeftBorder) {
         enemies.forEach((enemy) => {
             enemy.setDirectionRight();
             enemy.moveDown();
@@ -204,7 +226,7 @@ const update = () => {
     }
 
     const rightMostEnemy = getRightMostEnemy();
-    if (rightMostEnemy.x > window.innerWidth - ((window.innerWidth - GAME_X) / 2) - 30) {
+    if (rightMostEnemy.x > enemyRightBorder) {
         enemies.forEach((enemy) => {
             enemy.setDirectionLeft();
             enemy.moveDown();

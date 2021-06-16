@@ -7,7 +7,7 @@ export class Enemy extends Entity {
         super({ tag: 'img', className: 'enemy' })
         this.el.src = "/src/images/enemy.png";
         this.Speed = 1;
-        this.DownSpeed = 20;
+        this.DownSpeed = 10;
         this.direction = 'LEFT';
 
         this.getOverLappingBullet = getOverLappingBullet;

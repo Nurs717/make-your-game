@@ -40,6 +40,7 @@ const ENEMY_ROWS = 3;
 const ENEMY_COLS = 6;
 
 var PAUSED = false;
+var ENDGAME = false;
 
 const bullets = [];
 const enemies = [];
@@ -55,6 +56,10 @@ document.querySelector(".continue").addEventListener("click", (e) => {
 const removeEnemy = (enemy) => {
     enemies.splice(enemies.indexOf(enemy), 1);
     enemy.remove();
+    if (enemies.length === 0) {
+        document.querySelector(".congrats").style.display = "block";
+        ENDGAME = true;
+    }
 }
 
 const removeBullet = (bullet) => {
@@ -236,6 +241,8 @@ const update = () => {
 
 function startAnimating() {
     requestAnimationFrame(startAnimating);
-    update();
+    if (!ENDGAME) {
+        update();
+    }
 };
 startAnimating();

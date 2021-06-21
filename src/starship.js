@@ -2,9 +2,10 @@ const windowHeight = window.innerHeight;
 const windowWidth = window.innerWidth;
 
 import { Entity } from './entity.js';
+import { ENDGAME } from './index.js';
 
 export class StarShip extends Entity {
-    constructor({ removeLife, getOverLappingBullet, removeBullet, GAME_Y }) {
+    constructor({ removeLife, getOverLappingBullet, getOverLappingEnemies, removeBullet, GAME_Y }) {
         super({ tag: 'img' })
         this.el.src = "/src/images/ship.png";
 
@@ -15,6 +16,7 @@ export class StarShip extends Entity {
 
         this.removeLife = removeLife;
         this.getOverLappingBullet = getOverLappingBullet;
+        this.getOverLappingEnemies = getOverLappingEnemies;
         this.removeBullet = removeBullet
 
         this.setXY(windowWidth / 2, windowHeight - ((windowHeight - GAME_Y) / 2) - 50);
@@ -42,6 +44,11 @@ export class StarShip extends Entity {
     }
 
     update() {
+        const enemy = this.getOverLappingEnemies(this);
+        if (enemy) {
+            document.querySelector(".game-over").style.display = "block";
+            ENDGAME.status = true;
+        }
         const bullet = this.getOverLappingBullet(this);
         if (bullet && bullet.isEnemy) {
             this.removeBullet(bullet);

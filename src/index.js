@@ -40,7 +40,9 @@ const ENEMY_ROWS = 3;
 const ENEMY_COLS = 6;
 
 var PAUSED = false;
-var ENDGAME = false;
+export var ENDGAME = {
+    status: false,
+}
 
 const bullets = [];
 const enemies = [];
@@ -58,7 +60,7 @@ const removeEnemy = (enemy) => {
     enemy.remove();
     if (enemies.length === 0) {
         document.querySelector(".congrats").style.display = "block";
-        ENDGAME = true;
+        ENDGAME.status = true;
     }
 }
 
@@ -87,9 +89,19 @@ const getOverLappingBullet = (entity) => {
     return null
 };
 
+const getOverLappingEnemies = (entity) => {
+    for (let enemy of enemies) {
+        if (isOverLapping(entity, enemy)) {
+            return enemy;
+        }
+    }
+    return null
+};
+
 const starShip = new StarShip({
     removeLife: () => livesGui.removeLife(),
     getOverLappingBullet,
+    getOverLappingEnemies,
     removeBullet,
     GAME_Y,
 });
@@ -99,11 +111,12 @@ for (let row = 0; row < ENEMY_ROWS; row++) {
     for (let col = 0; col < ENEMY_COLS; col++) {
         const enemy = new Enemy({
             x: ((windowWidth - GAME_X) / 2) + col * 125 + 40,
-            y: ((windowHeight - GAME_Y) / 2) + row * 80,
+            y: ((windowHeight - GAME_Y) / 2) + row * 80 + 40,
             getOverLappingBullet,
             removeEnemy,
             removeBullet,
             addToScore: (amount) => scoreGui.addToScore(amount),
+            GAME_Y,
         });
         enemies.push(enemy);
         enemiesCol.push(enemy);
@@ -134,7 +147,7 @@ const enemyFireBullet = () => {
     const bottomEnemies = getBottomEnemies();
     const randomEnemy = getRandomEnemy(bottomEnemies);
 
-    if (!PAUSED) {
+    if (!PAUSED && !ENDGAME.status) {
         createBullet({
             x: randomEnemy.x + 5,
             y: randomEnemy.y + 76,
@@ -146,11 +159,13 @@ const enemyFireBullet = () => {
 setInterval(enemyFireBullet, 3000);
 
 const getLeftMostEnemy = () => {
-    return enemies.reduce((minimumEnemy, currentEnemy) => {
-        return currentEnemy.x < minimumEnemy.x ?
-            currentEnemy :
-            minimumEnemy;
-    });
+    if (!ENDGAME.status) {
+        return enemies.reduce((minimumEnemy, currentEnemy) => {
+            return currentEnemy.x < minimumEnemy.x ?
+                currentEnemy :
+                minimumEnemy;
+        });
+    }
 }
 
 const getRightMostEnemy = () => {
@@ -222,26 +237,28 @@ const update = () => {
         };
     });
 
-    const leftMostEnemy = getLeftMostEnemy();
-    if (leftMostEnemy.x < enemyLeftBorder) {
-        enemies.forEach((enemy) => {
-            enemy.setDirectionRight();
-            enemy.moveDown();
-        });
-    }
+    if (!ENDGAME.status) {
+        const leftMostEnemy = getLeftMostEnemy();
+        if (leftMostEnemy.x < enemyLeftBorder) {
+            enemies.forEach((enemy) => {
+                enemy.setDirectionRight();
+                enemy.moveDown();
+            });
+        }
 
-    const rightMostEnemy = getRightMostEnemy();
-    if (rightMostEnemy.x > enemyRightBorder) {
-        enemies.forEach((enemy) => {
-            enemy.setDirectionLeft();
-            enemy.moveDown();
-        });
+        const rightMostEnemy = getRightMostEnemy();
+        if (rightMostEnemy.x > enemyRightBorder) {
+            enemies.forEach((enemy) => {
+                enemy.setDirectionLeft();
+                enemy.moveDown();
+            });
+        }
     }
 };
 
 function startAnimating() {
     requestAnimationFrame(startAnimating);
-    if (!ENDGAME) {
+    if (!ENDGAME.status) {
         update();
     }
 };

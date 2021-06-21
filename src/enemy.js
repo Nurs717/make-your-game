@@ -1,14 +1,16 @@
 import { Entity } from './entity.js';
+import { ENDGAME } from './index.js';
 
-const POINTS_PER_KILL = 10;
+const POINTS_PER_KILL = 20;
 
 export class Enemy extends Entity {
-    constructor({ x, y, getOverLappingBullet, removeEnemy, removeBullet, addToScore, }) {
+    constructor({ x, y, getOverLappingBullet, removeEnemy, removeBullet, addToScore, GAME_Y, }) {
         super({ tag: 'img', className: 'enemy' })
         this.el.src = "/src/images/enemy.png";
         this.Speed = 1;
         this.DownSpeed = 10;
         this.direction = 'LEFT';
+        this.maxY = (window.innerHeight - GAME_Y) / 2 + GAME_Y - 100;
 
         this.getOverLappingBullet = getOverLappingBullet;
         this.removeBullet = removeBullet;
@@ -35,6 +37,12 @@ export class Enemy extends Entity {
             this.setXY(this.x - this.Speed, this.y);
         } else {
             this.setXY(this.x + this.Speed, this.y);
+        }
+
+        if (this.y > this.maxY) {
+            document.querySelector(".game-over").style.display = "block";
+            ENDGAME.status = true;
+            console.log('maxY')
         }
 
         const bullet = this.getOverLappingBullet(this);

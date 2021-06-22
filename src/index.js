@@ -3,8 +3,9 @@ const requestAnimationFrame = window.requestAnimationFrame;
 import { Bullet } from './bullet.js';
 import { StarShip } from './starship.js';
 import { Enemy } from './enemy.js';
-import { Score } from './score.js'
-import { Lives } from './lives.js'
+import { Score } from './score.js';
+import { Lives } from './lives.js';
+import { Timer } from './timer.js';
 
 const keys = {
     ArrowLeft: false,
@@ -49,6 +50,11 @@ const enemies = [];
 const enemiesGrid = [];
 const scoreGui = new Score();
 const livesGui = new Lives();
+
+var secondRAF = 0;
+var time = 0;
+
+const timer = new Timer();
 
 document.querySelector(".continue").addEventListener("click", (e) => {
     document.querySelector(".pause").style.display = "none";
@@ -187,40 +193,30 @@ const createBullet = ({ x, y, isEnemy = false }) => {
 }
 
 const update = () => {
-    if (keys['ArrowRight'] && starShip.x < starshipMax && !PAUSED) {
+    if (secondRAF === 60) {
+        secondRAF = 0;
+        time++;
+        timer.formatTime(time);
+    }
+    secondRAF++
+
+    if (keys['ArrowRight'] && starShip.x < starshipMax) {
         starShip.moveRight();
-    } else if (keys['ArrowLeft'] && starShip.x > starshipMin && !PAUSED) {
+    } else if (keys['ArrowLeft'] && starShip.x > starshipMin) {
         starShip.moveLeft();
     }
 
-    if (keys[' '] && !PAUSED) {
+    if (keys[' ']) {
         starShip.fire({
             createBullet,
         });
     }
 
-    if (keys['p']) {
-        if (!PAUSED) {
-            PAUSED = true;
-            keys['p'] = false;
-        } else {
-            PAUSED = false;
-            keys['p'] = false;
-        }
-    }
-
-    if (PAUSED) {
-        document.querySelector(".pause").style.display = "block";
-    } else {
-        document.querySelector(".pause").style.display = "none";
-    }
-
     starShip.update();
 
     bullets.forEach(bullet => {
-        if (!PAUSED) {
-            bullet.update();
-        };
+
+        bullet.update();
 
         if (bullet.y < 0) {
             bullet.remove();
@@ -232,9 +228,7 @@ const update = () => {
     });
 
     enemies.forEach((enemy) => {
-        if (!PAUSED) {
-            enemy.update();
-        };
+        enemy.update();
     });
 
     if (!ENDGAME.status) {
@@ -258,8 +252,24 @@ const update = () => {
 
 function startAnimating() {
     requestAnimationFrame(startAnimating);
-    if (!ENDGAME.status) {
+    if (!ENDGAME.status && !PAUSED) {
         update();
+    }
+
+    if (keys['p']) {
+        if (!PAUSED) {
+            PAUSED = true;
+            keys['p'] = false;
+        } else {
+            PAUSED = false;
+            keys['p'] = false;
+        }
+    }
+
+    if (PAUSED) {
+        document.querySelector(".pause").style.display = "block";
+    } else {
+        document.querySelector(".pause").style.display = "none";
     }
 };
 startAnimating();

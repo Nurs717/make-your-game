@@ -44,6 +44,12 @@ footer {
     z-index: 100;
 }
 
+.timer {
+    font-size: 30px;
+    text-align: left;
+    /* z-index: 100; */
+}
+
 .congrats {
     display: none;
     position: absolute;

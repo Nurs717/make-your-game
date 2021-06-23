@@ -14,6 +14,6 @@ export class Timer extends Entity {
     }
 
     refreshText() {
-        this.el.innerText = `Timer: ${this.time}`;
+        this.el.innerText = `Time: ${this.time}`;
     }
 }

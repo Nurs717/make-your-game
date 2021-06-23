@@ -1,3 +1,5 @@
+const laserSound = new Audio("/src/sound/laser.mp3");
+
 const windowHeight = window.innerHeight;
 const windowWidth = window.innerWidth;
 
@@ -19,7 +21,7 @@ export class StarShip extends Entity {
         this.getOverLappingEnemies = getOverLappingEnemies;
         this.removeBullet = removeBullet
 
-        this.setXY(windowWidth / 2, windowHeight - ((windowHeight - GAME_Y) / 2) - 50);
+        this.setXY(windowWidth / 2, windowHeight - ((windowHeight - GAME_Y) / 2) - 100);
     }
 
     moveRight() {
@@ -33,6 +35,8 @@ export class StarShip extends Entity {
     fire({ createBullet }) {
         if (this.canFire) {
             this.canFire = false;
+            let audio = laserSound.cloneNode(false)
+            audio.play();
             createBullet({
                 x: this.x,
                 y: this.y,
@@ -49,6 +53,7 @@ export class StarShip extends Entity {
             document.querySelector(".game-over").style.display = "block";
             ENDGAME.status = true;
         }
+
         const bullet = this.getOverLappingBullet(this);
         if (bullet && bullet.isEnemy) {
             this.removeBullet(bullet);

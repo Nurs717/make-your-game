@@ -7,6 +7,12 @@ import { Score } from './score.js';
 import { Lives } from './lives.js';
 import { Timer } from './timer.js';
 
+const laserSound2 = new Audio("/src/sound/laser2.mp3");
+const backgroundMusic = new Audio("/src/sound/SpaceShuttle.mp3");
+
+backgroundMusic.loop = true;
+backgroundMusic.play();
+
 const keys = {
     ArrowLeft: false,
     ArrowRight: false,
@@ -153,7 +159,10 @@ const enemyFireBullet = () => {
     const bottomEnemies = getBottomEnemies();
     const randomEnemy = getRandomEnemy(bottomEnemies);
 
+
     if (!PAUSED && !ENDGAME.status) {
+        let audio = laserSound2.cloneNode(false)
+        audio.play();
         createBullet({
             x: randomEnemy.x + 5,
             y: randomEnemy.y + 76,
@@ -256,7 +265,7 @@ function startAnimating() {
         update();
     }
 
-    if (keys['p']) {
+    if (keys['p'] && !ENDGAME.status) {
         if (!PAUSED) {
             PAUSED = true;
             keys['p'] = false;
@@ -268,8 +277,14 @@ function startAnimating() {
 
     if (PAUSED) {
         document.querySelector(".pause").style.display = "block";
+        backgroundMusic.pause();
     } else {
         document.querySelector(".pause").style.display = "none";
+        backgroundMusic.play();
+    }
+
+    if (ENDGAME.status) {
+        backgroundMusic.pause();
     }
 };
 startAnimating();

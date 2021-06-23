@@ -1,6 +1,7 @@
 import { Entity } from './entity.js';
 import { ENDGAME } from './index.js';
 
+const explosion = new Audio("/src/sound/explosion.mp3");
 const POINTS_PER_KILL = 20;
 
 export class Enemy extends Entity {
@@ -47,9 +48,15 @@ export class Enemy extends Entity {
 
         const bullet = this.getOverLappingBullet(this);
         if (bullet && !bullet.isEnemy) {
-            this.removeEnemy(this);
+            this.el.src = "/src/images/explosion.png";
+            this.el.className = 'boom';
+            let audio = explosion.cloneNode(false)
+            audio.play();
             this.removeBullet(bullet);
             this.addToScore(POINTS_PER_KILL);
+            setTimeout(() => {
+                this.removeEnemy(this);
+            }, 500);
         }
     }
 }

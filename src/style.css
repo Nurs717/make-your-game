@@ -8,7 +8,7 @@ body {
     margin: 0;
     font-family: Helvetica;
     background-image: url('images/space_bg.jpg');
-    animation: scroll-background 20s linear infinite;
+    animation: scroll-background 15s linear infinite;
     color: red;
 }
 
@@ -38,6 +38,12 @@ footer {
     max-width: 47px;
 }
 
+.boom {
+    position: fixed;
+    max-height: 75px;
+    max-width: 75px;
+}
+
 .lives {
     font-size: 30px;
     text-align: left;
@@ -45,9 +51,9 @@ footer {
 }
 
 .timer {
-    font-size: 30px;
+    font-size: 20px;
     text-align: left;
-    /* z-index: 100; */
+    z-index: 100;
 }
 
 .congrats {

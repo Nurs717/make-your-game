@@ -21,7 +21,7 @@ export class StarShip extends Entity {
         this.getOverLappingEnemies = getOverLappingEnemies;
         this.removeBullet = removeBullet
 
-        this.setXY(windowWidth / 2, windowHeight - ((windowHeight - GAME_Y) / 2) - 100);
+        this.setXY(windowWidth / 2, windowHeight - ((windowHeight - GAME_Y) / 2) - 80);
     }
 
     moveRight() {

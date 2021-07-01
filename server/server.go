@@ -8,6 +8,7 @@ import (
 )
 
 const indexFile = "index.html"
+const ScoreBoardFile = "scoreboard/scoreboard.html"
 
 var tmpl *template.Template
 
@@ -21,20 +22,16 @@ func Run() {
 	src := http.FileServer(http.Dir("./src"))
 	http.Handle("/src/", http.StripPrefix("/src/", src))
 	http.HandleFunc("/", enableCORS(gameIndexHandler))
+	http.HandleFunc("/api/scoreboard", enableCORS(scoreBoardHandler))
 
 	fmt.Println("Gaming on localhost:8080...")
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(":8000", nil))
 }
 
 func gameIndexHandler(w http.ResponseWriter, r *http.Request) {
 	tmpl.Execute(w, nil)
 }
 
-func enableCORS(next http.HandlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "GET, POST")
-		w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length")
-		next.ServeHTTP(w, r)
-	}
+func scoreBoardHandler(w http.ResponseWriter, r *http.Request) {
+
 }

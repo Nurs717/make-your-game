@@ -6,6 +6,9 @@ import { Enemy } from './enemy.js';
 import { Score } from './score.js';
 import { Lives } from './lives.js';
 import { Timer } from './timer.js';
+import { ScoreBoard } from './scoreboard.js';
+
+// new ScoreBoard();
 
 const laserSound2 = new Audio("/src/sound/laser2.mp3");
 const backgroundMusic = new Audio("/src/sound/SpaceShuttle.mp3");
